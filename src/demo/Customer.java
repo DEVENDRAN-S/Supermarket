@@ -8,36 +8,36 @@ import java.time.LocalTime;
 public class Customer extends Totalpoint 
 {
    
-   private String customer_name;
-   private String customer_phoneno;
-   private String product_name; 
-   private int purchase_qty;
-   private float product_price;
-   private float product_total_price;
-   private int customer_bill_no;
+   private String customerName;
+   private String customerPhoneNo;
+   private String productName; 
+   private int purchaseQty;
+   private float productPrice;
+   private float productTotalPrice;
+   private int customerBillNo;
 public Customer() {
 	    
    }
     Scanner sc=  new Scanner(System.in);
    
- public Customer(String customer_name,String customer_phoneno,  String product_name, int purchase_qty, float product_price,float product_total_price,int customer_bill_no) 
+ public Customer(String customerName,String customerPhoneNo,  String productName, int purchaseQty, float productPrice,float productTotalPrice,int customerBillNo) 
  {
-	this.customer_name = customer_name;
-	this.customer_phoneno=customer_phoneno;
-	this.product_name = product_name;
-	this.purchase_qty = purchase_qty;
-	this.product_price = product_price;
-	this.product_total_price=product_total_price;
-	this.customer_bill_no= customer_bill_no;
+	this.customerName = customerName;
+	this.customerPhoneNo=customerPhoneNo;
+	this.productName = productName;
+	this.purchaseQty = purchaseQty;
+	this.productPrice = productPrice;
+	this.productTotalPrice=productTotalPrice;
+	this.customerBillNo= customerBillNo;
 }
-public  void sellitems(ArrayList<Customer> customers,LinkedList<Groceries> groceries,ArrayList<Totalpoint>  totalpoints,String c_name,String c_no,int c_bill_no){
+public  void sellItem(ArrayList<Customer> customers,LinkedList<Groceries> groceries,ArrayList<Totalpoint>  totalpoints,String cName,String cPhoneNo,int cBillNo){
 	   Scanner sc=new Scanner(System.in); 
 	   int check=0;
 	   System.out.println("enter product name");
-	   String p_name=sc.next();
+	   String pName=sc.next();
 	 	for(Groceries g:groceries)// to check weather entered product name is available in the grocery list
 		{
-	 		if(g.getName().equalsIgnoreCase(p_name)) 
+	 		if(g.getName().equalsIgnoreCase(pName)) 
 	 		{
 	 			check++;
 	 		}
@@ -50,8 +50,8 @@ public  void sellitems(ArrayList<Customer> customers,LinkedList<Groceries> groce
 	 	  try
 	 	{
 	 	   System.out.println("enter Quantity");
-		   int  product_Quantity=sc.nextInt();
-		   if( customerAlreadyContains(customers, groceries,c_bill_no,p_name,product_Quantity)) //for updating in the existing customer bill// for not repeating same product in the bill
+		   int  productQuantity=sc.nextInt();
+		   if( customerAlreadyContains(customers, groceries,cBillNo,pName,productQuantity)) //for updating in the existing customer bill// for not repeating same product in the bill
 		   {
 	
 			   //Main.displayitems(groceries);
@@ -60,19 +60,19 @@ public  void sellitems(ArrayList<Customer> customers,LinkedList<Groceries> groce
 		   {
 			   for(Groceries g:groceries)
 				{
-					if(g.getName().equalsIgnoreCase(p_name) && product_Quantity<=g.getQuantity() )//if the entered quantity is within the available in the grocery list
+					if(g.getName().equalsIgnoreCase(pName) && productQuantity<=g.getQuantity() )//if the entered quantity is within the available in the grocery list
 					{
-						float pro_total_price=product_Quantity*g.getMrp();
-						customers.add(new Customer(c_name,c_no,g.getName(),product_Quantity,g.getMrp(),pro_total_price,c_bill_no));
-						System.out.println("#####  "+product_Quantity+" quantity of "+p_name +" is added to customer bill  #####\n");
-						 int prev_Qty=g.getQuantity();
-						int remaining_Qty= g.setQuantity(prev_Qty-product_Quantity);
-						 System.out.println("#####  Remaining Quantity of "+p_name+" in the grocery list is:  "+remaining_Qty+"  #####\n");
+						float proTotalPrice=productQuantity*g.getMrp();
+						customers.add(new Customer(cName,cPhoneNo,g.getName(),productQuantity,g.getMrp(),proTotalPrice,cBillNo));
+						System.out.println("#####  "+productQuantity+" quantity of "+pName +" is added to customer bill  #####\n");
+						int prevQty=g.getQuantity();
+						int remaining_Qty= g.setQuantity(prevQty-productQuantity);
+						System.out.println("#####  Remaining Quantity of "+pName+" in the grocery list is:  "+remaining_Qty+"  #####\n");
 						//Main.displayitems(groceries);
 					}
-					else if(g.getName().equalsIgnoreCase(p_name) && product_Quantity>g.getQuantity() )// if the entered quantity is not available in the grocery list
+					else if(g.getName().equalsIgnoreCase(pName) && productQuantity>g.getQuantity() )// if the entered quantity is not available in the grocery list
 					{
-						System.out.println("    we have only "+g.getQuantity() +" quantity of "+p_name);
+						System.out.println("    we have only "+g.getQuantity() +" quantity of "+pName);
 					}
 				}
 		   }
@@ -83,58 +83,58 @@ public  void sellitems(ArrayList<Customer> customers,LinkedList<Groceries> groce
 	 	  System.err.println("Entered value is not an integer");
 	 	  }
 	 	}
-	 	sellorremove(customers, groceries,totalpoints,c_name,c_no,c_bill_no);
+	 	sellOrRemove(customers, groceries,totalpoints,cName,cPhoneNo,cBillNo);
 	     
 }
-public  void display_customer_bill(ArrayList<Customer> customers ,LinkedList<Groceries> groceries,ArrayList<Totalpoint>  totalpoints,String c_name,String c_no,int c_bill_no)//to display customer bill
+public  void displayCustomerBill(ArrayList<Customer> customers ,LinkedList<Groceries> groceries,ArrayList<Totalpoint>  totalpoints,String cName,String cPhoneNo,int cBillNo)//to display customer bill
 {
 	float total=0;
 	System.out.println("\n                          "+"BILLING");
-	 DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/YYYY");
-	 DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm:ss");
-	   LocalDate D_now = LocalDate.now();
-	   LocalTime T_now=LocalTime.now();
-	System.out.println("\n      BILL NO  :"+c_bill_no);   
-	System.out.println("CUSTOMER NAME  :"+c_name);
-	System.out.println("                                                Date: "+df.format(D_now));//for date and time
-	System.out.println("                                                Time: "+tf.format(T_now));  
+	DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/YYYY");
+	DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm:ss");
+    LocalDate dateNow = LocalDate.now();
+	LocalTime timeNow=LocalTime.now();
+	System.out.println("\n      BILL NO  :"+cBillNo);   
+	System.out.println("CUSTOMER NAME  :"+cName);
+	System.out.println("                                                Date: "+df.format(dateNow));//for date and time
+	System.out.println("                                                Time: "+tf.format(timeNow));  
 	System.out.println("======================================================================");
 	System.out.println("Item name"+"\t\t"+"Quantity"+"\t"+"unit cost"+"\t"+"Item Total cost");
 	System.out.println("======================================================================");
 	for(Customer c:customers) 
 	{
-		if(c.customer_bill_no==c_bill_no)
+		if(c.customerBillNo==cBillNo)
 		{
-		 System.out.println(c.getProduct_name()+"\t\t"+c.getPurchase_qty()+"\t\t"+c.getProduct_price()+"\t\t"+c.product_total_price);
-		 total=total+(c.getProduct_price()*c.getPurchase_qty());// for total cost
+		 System.out.println(c.productName+"\t\t"+c.purchaseQty+"\t\t"+c.productPrice+"\t\t"+c.productTotalPrice);
+		 total=total+(c.productPrice*c.purchaseQty);// for total cost
 		}
 	}
 	System.out.println("======================================================================");
     System.out.println("Total Amount   :"+total);
     System.out.println("======================================================================");
-     float discount_price=0;
-     float save_price=0;
+     float discountPrice=0;
+     float savePrice=0;
      if(total>=500)// discount above 500
      {
-    	 save_price=(total*10)/100;
-    	  discount_price=total-save_price;
-    		 System.out.println("Discount price  :"+ discount_price);
+    	 savePrice=(total*10)/100;
+    	  discountPrice=total-savePrice;
+    		 System.out.println("Discount price  :"+ discountPrice);
     		 System.out.println("======================================================================");
-    		 System.out.println("         YOUR TODAYS SAVING IS   :"+save_price);
+    		 System.out.println("         YOUR TODAYS SAVING IS   :"+savePrice);
     		 System.out.println("======================================================================");
      }
      else if(total>=300)// discount above 300
      {
-    	 save_price=(total*5)/100;
-    	  discount_price=total-save_price;
-    		 System.out.println("Discount price  :"+ discount_price);
+    	 savePrice=(total*5)/100;
+    	  discountPrice=total-savePrice;
+    		 System.out.println("Discount price  :"+ discountPrice);
     		 System.out.println("===================================================================");
-    		 System.out.println("         YOUR TODAYS SAVING IS   :"+save_price);
+    		 System.out.println("         YOUR TODAYS SAVING IS   :"+savePrice);
     		 System.out.println("===================================================================");
      }
      else 
      {
-    	 discount_price= total;
+    	 discountPrice= total;
      }
    
 	
@@ -142,35 +142,36 @@ public  void display_customer_bill(ArrayList<Customer> customers ,LinkedList<Gro
      
      System.out.println("do you want to make any changes in the bill (yes/no)   ");//conforming bill
    try
-    { String bill_change=sc.next();
-     if(bill_change.equalsIgnoreCase("yes")) 
+    { 
+	   String billChange=sc.next();
+     if(billChange.equalsIgnoreCase("yes")) 
      {
-    	 sellorremove(customers,groceries,totalpoints,c_name,c_no,c_bill_no);
+    	 sellOrRemove(customers,groceries,totalpoints,cName,cPhoneNo,cBillNo);
      }
-     else if(bill_change.equalsIgnoreCase("no")) 
+     else if(billChange.equalsIgnoreCase("no")) 
      {
     	 System.out.println("           Your bill is confirmed!thank you\n\n\n");
-    	customerdetails(totalpoints, c_name, c_no,  discount_price);//adding points to customers
+    	customerdetails(totalpoints, cName, cPhoneNo,  discountPrice);//adding points to customers
      }
     }
    catch(Exception e)
        {
     	e.printStackTrace();
-    	System.out.println("Enters Invalid input");
+    	System.out.println(" Invalid input");
        }
      
      
-    payment(discount_price); 
+    //payment(discountPrice); 
 }
-public  void removeitem(ArrayList<Customer> Customers,LinkedList<Groceries> groceries,ArrayList<Totalpoint>  totalpoints,String c_name,String c_no,int c_bill_no) {
+public  void removeItem(ArrayList<Customer> customers,LinkedList<Groceries> groceries,ArrayList<Totalpoint>  totalpoints,String cName,String cPhoneNo,int cBillNo) {
 	// for canceling items
-	String p_name="";
+	String pName="";
 	int check=0;
 	System.out.println("enter the product name to cancel");
-	p_name=sc.next();
-	for(Customer c:Customers)// to check the product is in customer bill
+	pName=sc.next();
+	for(Customer c:customers)// to check the product is in customer bill
 	{
- 		if(c.customer_bill_no==c_bill_no && c.product_name.equals(p_name)) 
+ 		if(c.customerBillNo==cBillNo && c.productName.equals(pName)) 
  		{
  			check++;
  		}
@@ -181,54 +182,54 @@ public  void removeitem(ArrayList<Customer> Customers,LinkedList<Groceries> groc
  	else 
  	{
  		
- 		for(Customer c:Customers)
+ 		for(Customer c:customers)
  		{
  			
- 			if(c.customer_bill_no==c_bill_no && c.product_name.equals(p_name))
+ 			if(c.customerBillNo==cBillNo && c.productName.equals(pName))
  			{ 
  			 try //to check the quantity is only integer
  			  {
  				System.out.println("Enter the quantity to cancel");
- 		 		int  product_Quantity=sc.nextInt();
- 				if(c.purchase_qty==product_Quantity) //if the buy quantity and canceling quantity are same
+ 		 		int  productQuantity=sc.nextInt();
+ 				if(c.purchaseQty==productQuantity) //if the buy quantity and canceling quantity are same
  				{
  					for(Groceries g:groceries) 
 					{
-						if(g.getName().equals(p_name)) 
+						if(g.getName().equals(pName)) 
 						{
-							 int prev_Qty=g.getQuantity();
-							 int remaining_Qty=g.setQuantity(prev_Qty+product_Quantity);
-							 System.out.println("#####  Remaining Quantity of "+p_name+" in the grocery list is:  "+remaining_Qty+"  #####\n");
+							 int prevQty=g.getQuantity();
+							 int remainingQty=g.setQuantity(prevQty+productQuantity);
+							 System.out.println("#####  Remaining Quantity of "+pName+" in the grocery list is:  "+remainingQty+"  #####\n");
 							// Main.displayitems(groceries);
 						}
 					}
- 				   Customers.remove(c);
- 				  System.out.println("#####  "+p_name +" is fully removed from customer bill  #####\n");
+ 				   customers.remove(c);
+ 				  System.out.println("#####  "+pName +" is fully removed from customer bill  #####\n");
  				   break;
  			  	
  			
  			    }
- 			    else if(c.purchase_qty>product_Quantity)// if the canceling quantity is less than buy quantity
+ 			    else if(c.purchaseQty>productQuantity)// if the canceling quantity is less than buy quantity
  				{
- 			    	 int prev_Qty1=c.getPurchase_qty();
- 			    	 int  new_Qty1=c.setPurchase_qty(prev_Qty1-product_Quantity);
- 			    	 c.setProduct_total_price(c.getProduct_price()*new_Qty1);
- 			    	 System.out.println("#####  "+product_Quantity+" quantity of "+p_name +" is removed from  the existing customer bill  #####\n");
+ 			    	 int prevQty1=c.getPurchaseQty();
+ 			    	 int  newQty1=c.setPurchaseQty(prevQty1-productQuantity);
+ 			    	 c.setProductTotalPrice(c.getProductPrice()*newQty1);
+ 			    	 System.out.println("#####  "+productQuantity+" quantity of "+pName +" is removed from  the existing customer bill  #####\n");
  			    	    
  			    	for(Groceries g:groceries) 
  					{
- 						if(g.getName().equals(p_name)) 
+ 						if(g.getName().equals(pName)) 
  						{
- 							 int prev_Qty=g.getQuantity();
- 							 int remaining_Qty= g.setQuantity(prev_Qty+product_Quantity);
- 							 System.out.println("#####  Remaining Quantity of "+p_name+" in the grocery list is:  "+remaining_Qty+"  #####\n");
+ 							 int prevQty=g.getQuantity();
+ 							 int remainingQty= g.setQuantity(prevQty+productQuantity);
+ 							 System.out.println("#####  Remaining Quantity of "+pName+" in the grocery list is:  "+remainingQty+"  #####\n");
  							 //Main.displayitems(groceries);
  						}
  					} 	
  				}
  			    else 
  			    {
- 			    	System.out.println("     you have bought only "+c.purchase_qty+ " quantity of "+p_name);
+ 			    	System.out.println("     you have bought only "+c.purchaseQty+ " quantity of "+pName);
  			    }
  			
  			 }
@@ -241,34 +242,34 @@ public  void removeitem(ArrayList<Customer> Customers,LinkedList<Groceries> groc
  			}
  		}	
  	}
- 	sellorremove(Customers, groceries,totalpoints, c_name,c_no,c_bill_no);
+ 	sellOrRemove(customers, groceries,totalpoints, cName,cPhoneNo,cBillNo);
 }
-public  boolean customerAlreadyContains(ArrayList<Customer> customers,LinkedList<Groceries> groceries,int c_bill_no,String p_name,int product_Quantity ) 
+public  boolean customerAlreadyContains(ArrayList<Customer> customers,LinkedList<Groceries> groceries,int cBillNo,String pName,int productQuantity ) 
 {
 	for(Customer c:customers) 
 	{
-		if(c.customer_bill_no==c_bill_no) 
+		if(c.customerBillNo==cBillNo) 
 		{ 
 			
-				if(c.product_name.equalsIgnoreCase(p_name)) 
+				if(c.productName.equalsIgnoreCase(pName)) 
 				{
 					 for(Groceries g:groceries) 
 					   {
-						   if(g.getName().equalsIgnoreCase(p_name) && product_Quantity<=g.getQuantity() )
+						   if(g.getName().equalsIgnoreCase(pName) && productQuantity<=g.getQuantity() )
 							{
 							
-								int prev_Qty=g.getQuantity();
-							    int remaining_Qty=g.setQuantity(prev_Qty-product_Quantity);
+								int prevQty=g.getQuantity();
+							    int remainingQty=g.setQuantity(prevQty-productQuantity);
 	
-								int prev_Qty1=c.getPurchase_qty();
-							    int new_Qty1=c.setPurchase_qty(prev_Qty1+product_Quantity);   
-							    c.setProduct_total_price(c.getProduct_price()*new_Qty1); 
-							    	 System.out.println("#####  "+product_Quantity+" quantity of "+p_name +" is updated in the existing customer bill  #####\n");
-							    	 System.out.println("#####  Remaining Quantity of "+p_name+" in the grocery list is:  "+remaining_Qty+"  #####\n");
+								int prevQty1=c.getPurchaseQty();
+							    int newQty1=c.setPurchaseQty(prevQty1+productQuantity);   
+							    c.setProductTotalPrice(c.getProductPrice()*newQty1); 
+							    	 System.out.println("#####  "+productQuantity+" quantity of "+pName +" is updated in the existing customer bill  #####\n");
+							    	 System.out.println("#####  Remaining Quantity of "+pName+" in the grocery list is:  "+remainingQty+"  #####\n");
 							}
-							else if(g.getName().equalsIgnoreCase(p_name) && product_Quantity>g.getQuantity() )
+							else if(g.getName().equalsIgnoreCase(pName) && productQuantity>g.getQuantity() )
 							{
-								System.out.println(" *   we have only "+g.getQuantity() +" quantity of "+p_name);
+								System.out.println(" *   we have only "+g.getQuantity() +" quantity of "+pName);
 							}
 					   }
 						return true;
@@ -279,139 +280,86 @@ public  boolean customerAlreadyContains(ArrayList<Customer> customers,LinkedList
 	}
 	return false;
 }
-public  void sellorremove(ArrayList<Customer> customers,LinkedList<Groceries> groceries,ArrayList<Totalpoint>  totalpoints,String c_name,String c_no,int c_bill_no) 
+public  void sellOrRemove(ArrayList<Customer> customers,LinkedList<Groceries> groceries,ArrayList<Totalpoint>  totalpoints,String cName,String cPhoneNo,int cBillNo) 
 {
 	String choice = "";
 	System.out.println("do you want to sell a new  items/remove an item (sell/remove/no)");
      choice=sc.next();
 	if(choice.equalsIgnoreCase("sell"))
 	{
-		sellitems(customers, groceries,totalpoints,c_name,c_no,c_bill_no);
+		sellItem(customers, groceries,totalpoints,cName,cPhoneNo,cBillNo);
 	}
 	else if(choice.equalsIgnoreCase("remove"))
 	{
-		removeitem(customers, groceries,totalpoints,c_name,c_no,c_bill_no);
+		removeItem(customers, groceries,totalpoints,cName,cPhoneNo,cBillNo);
 	}
 	else if(choice.equalsIgnoreCase("no"))
 	{
-		display_customer_bill(customers,groceries,totalpoints,c_name,c_no,c_bill_no);
+		displayCustomerBill(customers,groceries,totalpoints,cName,cPhoneNo,cBillNo);
 	}
 	else 
 	{
-		sellorremove(customers, groceries,totalpoints,c_name,c_no,c_bill_no);
+		sellOrRemove(customers, groceries,totalpoints,cName,cPhoneNo,cBillNo);
 	}
 }
 
 
-public String getCustomer_phoneno() {
-	return customer_phoneno;
+public String getCustomerPhoneNo() {
+	return customerPhoneNo;
 }
-public void setCustomer_phoneno(String customer_phoneno) {
-	this.customer_phoneno = customer_phoneno;
+public void setCustomerPhoneNo(String customerPhoneNo) {
+	this.customerPhoneNo = customerPhoneNo;
 }
-public float getProduct_total_price() {
-	return product_total_price;
+public float getProductTotalPrice() {
+	return productTotalPrice;
 }
-public void setProduct_total_price(float product_total_price) {
-	this.product_total_price = product_total_price;
+public void setProductTotalPrice(float productTotalPrice) {
+	this.productTotalPrice = productTotalPrice;
 }
-public String getCustomer_name() {
-	return customer_name;
+public String getCustomerName() {
+	return customerName;
 }
-public void setCustomer_name(String customer_name) {
-	this.customer_name = customer_name;
+public void setCustomerName(String customerName) {
+	this.customerName = customerName;
 }
-public int getPurchase_qty() {
-	return purchase_qty;
+public int getPurchaseQty() {
+	return purchaseQty;
 }
-public int setPurchase_qty(int purchase_qty) {
-	return this.purchase_qty = purchase_qty;
-}
-
-public String getProduct_name() {
-	return product_name;
+public int setPurchaseQty(int purchaseQty) {
+	return this.purchaseQty = purchaseQty;
 }
 
-
-public void setProduct_name(String product_name) {
-	this.product_name = product_name;
+public String getProductName() {
+	return productName;
 }
 
 
-public float getProduct_price() {
-	return product_price;
+public void setProductName(String productName) {
+	this.productName = productName;
 }
 
 
-public void setProduct_price(float product_price) {
-	this.product_price = product_price;
+public float getProductPrice() {
+	return productPrice;
 }
 
-public int getCustomer_bill_no() {
-	return customer_bill_no;
-}
-public void setCustomer_bill_no(int customer_bill_no) {
-	this.customer_bill_no = customer_bill_no;
-}
-public  void payment(float discount_price) 
-{
-   System.out.println("do you want to make  online payment  (yes/no)");
-   String payment_mode=sc.next();
-   if(payment_mode.equalsIgnoreCase("yes"))
-   {
-		System.out.println("please select your bank to pay");
-		System.out.println("1)axis bank");
-		System.out.println("2)SBI");
-		System.out.println("3)Indian bank");
-		System.out.println("4)ICICI BANK");
-		int b=sc.nextInt();
-		switch(b) {
-			case 1:
-				System.out.println("Welcome to AXIS bank");
-				break;
-			case 2:
-				System.out.println("Welcome to SBI");
-				break;
-			case 3:
-				System.out.println("Welcome to Indian bank");
-				break;
-			case 4:
-				System.out.println("Welcome to ICICI BANK");
-				break;
-		}
-	
-				
-	try {
-	System.out.println("enter  the amount to pay");
-	float amountpay=sc.nextFloat();
-	if(amountpay==discount_price)
-	{
-		System.out.println("                  your payment is successfull");
-		System.out.println("         Thank you !We wish you all a great success!!!!\n");
-	}
-	else
-	{
-		System.out.println("wrong amount");
-	}
-	}
-	catch(Exception e)
-	{
-		e.printStackTrace();
-		System.out.println("Enter only Integer/float");
-	}
-   }
-   else 
-   {
-	   System.out.println("         Thank you !We wish you all a great success!!!!\n");
-   }
+
+public void setProductPrice(float productPrice) {
+	this.productPrice = productPrice;
 }
 
+public int getCustomerBillNo() {
+	return customerBillNo;
+}
+public void setCustomerBillNo(int customerBillNo) {
+	this.customerBillNo = customerBillNo;
+}
 
 @Override
 public String toString() {
-	return "Customer [customer_name=" + customer_name +"billno"+customer_bill_no+ ", customer_no=" + customer_phoneno + ", product_name="
-			+ product_name + ", purchase_qty=" + purchase_qty + ", product_price=" + product_price
-			+ ", product_total_price=" + product_total_price + ", sc=" + sc + "]";
+	return "Customer [customer_name=" + customerName +"billno"+customerBillNo+ ", customer_no=" + customerPhoneNo + ", product_name="
+			+ productName + ", purchase_qty=" + purchaseQty + ", product_price=" + productPrice
+			+ ", product_total_price=" + productTotalPrice + "]";
 }
 
 
